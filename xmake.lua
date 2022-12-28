@@ -1,6 +1,6 @@
 set_xmakever("2.7.3")
 
-set_project("ProjectName")
+set_project("VulkanTutorial")
 set_version("0.0.0")
 
 set_allowedplats("windows", "linux", "macosx")
@@ -10,14 +10,30 @@ add_rules("mode.debug", "mode.release")
 set_languages("cxx20")
 set_optimize("fastest")
 
+add_requires("vulkan-hpp v1.3.231")
+add_requires("vulkansdk")
+add_requires("glfw 3.3.8")
+add_requires("glm 0.9.9+8")
+
 local outputdir = "$(mode)-$(os)-$(arch)"
 
-target("ProjectName")
+rule("cp-resources")
+    after_build(function (target)
+        os.cp(target:name() .. "/resources", "build/" .. outputdir .. "/" .. target:name() .. "/bin")
+    end)
+
+target("VulkanTutorial")
     set_kind("binary")
+    add_rules("cp-resources")
 
-    set_targetdir("build/" .. outputdir .. "/ProjectName/bin")
-    set_objectdir("build/" .. outputdir .. "/ProjectName/obj")
+    set_targetdir("build/" .. outputdir .. "/VulkanTutorial/bin")
+    set_objectdir("build/" .. outputdir .. "/VulkanTutorial/obj")
 
-    add_files("ProjectName/src/**.cpp")
-    add_headerfiles("ProjectName/include/**.hpp", "ProjectName/include/**.h")
-    add_includedirs("ProjectName/include/", {public = true})
+    add_packages("vulkan-hpp")
+    add_packages("vulkansdk")
+    add_packages("glfw")
+    add_packages("glm")
+
+    add_files("VulkanTutorial/src/**.cpp")
+    add_headerfiles("VulkanTutorial/include/**.hpp", "VulkanTutorial/include/**.h")
+    add_includedirs("VulkanTutorial/include/", {public = true})
