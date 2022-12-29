@@ -52,10 +52,10 @@ public:
         }
 
 private:
-        GLFWwindow *window;
+        GLFWwindow *m_window;
 
-        VkInstance instance;
-        VkDebugUtilsMessengerEXT debugMessenger;
+        VkInstance m_instance;
+        VkDebugUtilsMessengerEXT m_debugMessenger;
 
         void initWindow() {
                 glfwInit();
@@ -63,7 +63,7 @@ private:
                 glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
                 glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-                window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+                m_window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
         }
 
         void initVulkan() {
@@ -72,19 +72,19 @@ private:
         }
 
         void mainLoop() {
-                while (!glfwWindowShouldClose(window)) {
+                while (!glfwWindowShouldClose(m_window)) {
                         glfwPollEvents();
                 }
         }
 
         void cleanup() {
                 if (enableValidationLayers) {
-                        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+                        DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
                 }
 
-                vkDestroyInstance(instance, nullptr);
+                vkDestroyInstance(m_instance, nullptr);
 
-                glfwDestroyWindow(window);
+                glfwDestroyWindow(m_window);
 
                 glfwTerminate();
         }
@@ -123,7 +123,7 @@ private:
                         createInfo.pNext = nullptr;
                 }
 
-                if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
+                if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS) {
                         throw std::runtime_error("failed to create instance!");
                 }
         }
@@ -146,7 +146,7 @@ private:
                 VkDebugUtilsMessengerCreateInfoEXT createInfo;
                 populateDebugMessengerCreateInfo(createInfo);
 
-                if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
+                if (CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger) != VK_SUCCESS) {
                         throw std::runtime_error("failed to set up debug messenger!");
                 }
         }
@@ -201,7 +201,7 @@ private:
 };
 
 int main() {
-        HelloTriangleApplication app;
+        HelloTriangleApplication app{};
 
         try {
                 app.run();
